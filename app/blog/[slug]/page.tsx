@@ -34,10 +34,10 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
         React 默认不渲染 HTML 字符串以防 XSS 攻击。
         但因为内容是我们自己写的 Markdown，所以这里我们告诉 React "我相信这个内容是安全的"。
       */}
-      <div 
-        className="prose prose-slate lg:prose-xl mx-auto"
-        dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
-      />
+    <div 
+      className="prose prose-slate dark:prose-invert lg:prose-xl mx-auto"
+      dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
+    />
     </article>
   );
 }
