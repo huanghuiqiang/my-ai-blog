@@ -9,7 +9,7 @@ export default function Home() {
     <div className="min-h-screen pb-20">
       <Header />
       
-      <main className="max-w-2xl mx-auto px-6">
+      <main className="max-w-4xl mx-auto px-6">
         <section className="mb-16 pt-10">
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
             从 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">确定性</span>
@@ -28,7 +28,7 @@ export default function Home() {
               {allPosts.length} 篇
             </span>
           </div>
-          <div className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
             {allPosts.map((post) => (
               <PostCard key={post.slug} post={post} />
             ))}

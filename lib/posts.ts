@@ -5,43 +5,44 @@ import { remark } from 'remark';
 import html from 'remark-html';
 
 // 1. 定义文章的数据结构 (TypeScript Interface)
-// 这就是类型系统的力量：我们要明确告诉程序，一篇文章必须包含哪些字段
 export interface Post {
-  slug: string;    // 文件名 (作为 URL 路径)
+  slug: string;    // 文件名
   title: string;   // 标题
   date: string;    // 日期
   description: string; // 简介
+  category?: string; // 栏目 (可选，为了兼容旧文章)
 }
 
-// 定义存放文章的路径
+// 定义系统支持的栏目
+export const CATEGORIES = {
+  'ai-engineering': 'AI 工程化',
+  'ai-for-developers': '程序员的 AI 觉醒',
+  'build-in-public': '实战日志',
+  'video-summary': 'AI 视频总结',
+};
+
+// ... (postsDirectory 定义保持不变)
 const postsDirectory = path.join(process.cwd(), 'posts');
 
 // 2. 获取所有文章列表的函数
 export function getSortedPostsData(): Post[] {
-  // 获取 posts 文件夹下的所有文件名 ['first-ai-post.md', ...]
   const fileNames = fs.readdirSync(postsDirectory);
 
   const allPostsData = fileNames.map((fileName) => {
-    // 去掉 ".md" 后缀，作为 slug (URL 标识)
     const slug = fileName.replace(/\.md$/, '');
-
-    // 读取文件内容
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-    // 使用 gray-matter 解析元数据
     const matterResult = matter(fileContents);
 
-    // 组合数据
     return {
       slug,
       title: matterResult.data.title,
       date: matterResult.data.date,
       description: matterResult.data.description,
+      category: matterResult.data.category || '其他', // 默认为其他
     };
   });
 
-  // 按日期降序排序 (最新的在前面)
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
       return 1;
@@ -51,28 +52,34 @@ export function getSortedPostsData(): Post[] {
   });
 }
 
+// 新增：根据栏目获取文章
+export function getPostsByCategory(category: string): Post[] {
+  const allPosts = getSortedPostsData();
+  // 这里的 category 参数是 URL 中的 slug (如 ai-engineering)
+  // 我们需要匹配 Frontmatter 中的 category 字段
+  // 假设 Frontmatter 存的是 key (如 ai-engineering) 或者 value (如 AI 工程化)
+  // 为了简单，建议 Frontmatter 存 key
+  return allPosts.filter(post => post.category === category);
+}
+
 // 根据 slug 获取单篇文章的详细数据
 export async function getPostData(slug: string) {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-  // 1. 解析元数据
   const matterResult = matter(fileContents);
 
-  // 2. 使用 remark 将 Markdown 转换为 HTML 字符串
-  // 这是一个"异步"过程，所以需要 await
   const processedContent = await remark()
     .use(html)
     .process(matterResult.content);
 
   const contentHtml = processedContent.toString();
 
-  // 3. 返回组合数据
   return {
     slug,
     contentHtml,
     title: matterResult.data.title,
     date: matterResult.data.date,
-    description: matterResult.data.description, // 添加 description
+    description: matterResult.data.description,
+    category: matterResult.data.category || '其他',
   };
 }

@@ -2,6 +2,7 @@
 title: "我是如何用 Next.js + Tailwind 搭建这个 AI 博客的"
 date: "2025-11-27"
 description: "抛弃 WordPress，拒绝复杂的 Docker。记录我如何从零开始，使用 Next.js 15 和 Tailwind CSS v4 构建一个高性能、现代化的扁平化博客系统。"
+category: "build-in-public"
 tags: ["Next.js", "Tailwind CSS", "Architecture", "Learning"]
 ---
 

@@ -1,4 +1,4 @@
-import { getPostData, getSortedPostsData } from '@/lib/posts';
+import { getPostData, getSortedPostsData, CATEGORIES } from '@/lib/posts';
 import { Header } from '@/components/Header';
 import Link from 'next/link';
 import { Metadata } from 'next';
@@ -35,29 +35,34 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
   const postData = await getPostData(slug);
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-6">
+    <div className="min-h-screen pb-20">
       {/* 复用 Header，保持一致体验 */}
       <Header />
 
-      <main>
+      <main className="max-w-4xl mx-auto px-6">
         <article>
-          <header className="mb-10 text-center">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <header className="mb-10 text-center max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight">
               {postData.title}
             </h1>
-            <div className="text-slate-500 dark:text-slate-400">
-              {postData.date}
+            <div className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-4">
+              <span>{postData.date}</span>
+              {postData.category && (
+                <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded text-sm">
+                  {CATEGORIES[postData.category as keyof typeof CATEGORIES] || postData.category}
+                </span>
+              )}
             </div>
           </header>
 
           <div 
-            className="prose prose-slate dark:prose-invert lg:prose-xl mx-auto"
+            className="prose prose-slate dark:prose-invert prose-lg md:prose-xl max-w-none mx-auto"
             dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
           />
         </article>
 
-        <div className="mt-10 pt-10 border-t border-slate-200 dark:border-slate-700">
-          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+        <div className="mt-16 pt-10 border-t border-slate-200 dark:border-slate-800">
+          <Link href="/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:underline font-medium">
             ← 返回首页
           </Link>
         </div>

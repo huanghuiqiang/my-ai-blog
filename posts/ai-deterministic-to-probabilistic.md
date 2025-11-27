@@ -2,6 +2,7 @@
 title: "人工智能：从确定性编程到概率性学习"
 date: "2023-11-27"
 description: "最大的挑战不是写代码，而是思维模式的转变：从“编写确定性的规则”转变为“设计概率性的优化目标”"
+category: "ai-for-developers"
 tags: ["AI", "Software 2.0", "Machine Learning", "Deep Learning", "Neural Network"]
 ---
 你好！很高兴看到一位具备编程背景的同行（我通常称你们为“Software 1.0 工程师”）想要跨越到人工智能（Software 2.0）的领域。
