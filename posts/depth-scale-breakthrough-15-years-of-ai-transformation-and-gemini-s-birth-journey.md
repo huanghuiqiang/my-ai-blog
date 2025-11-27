@@ -2,8 +2,9 @@
 title: "深度、规模与突破：AI 十五年巨变与 Gemini 的诞生之路"
 date: "2025-11-27"
 description: "Jeff Dean 深度复盘 Google AI 十五年的演进历程：从 Disbelief 系统到 Transformer 架构，再到 Gemini 的多模态突破，揭示算力、算法与规模化如何重塑人工智能。"
-category: "Artificial Intelligence"
+category: "video-summary"
 tags: ["Google DeepMind", "Jeff Dean", "Gemini", "Transformer", "TPU", "Large Language Models"]
+
 ---
 > **引用来源**：本文内容整理自 Google DeepMind 首席科学家 Jeff Dean 关于人工智能发展历史与 Gemini 模型技术演进的主题分享。[Stanford AI Club: Jeff Dean 谈重要的人工智能趋势](https://www.youtube.com/watch?v=AnTw_t21ayE)
 ---
