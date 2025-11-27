@@ -11,7 +11,7 @@ export function Header() {
             AI
           </div>
           <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors hidden sm:block">
-            我的 AI 学习博客
+            达文西的 AI 学习博客
           </span>
         </Link>
 
