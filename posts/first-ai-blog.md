@@ -11,3 +11,5 @@ tags: ["AI", "Architecture", "Next.js"]
 
 - 这一点很酷
 - 那一点也很酷
+
+## Update: 我已经成功上线了！
