@@ -2,9 +2,40 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
-import html from 'remark-html';
+import remarkRehype from 'remark-rehype';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeSlug from 'rehype-slug';
+import rehypeStringify from 'rehype-stringify';
 
-// 1. 定义文章的数据结构 (TypeScript Interface)
+// ... (中间代码保持不变，直到 getPostData)
+
+// 根据 slug 获取单篇文章的详细数据
+export async function getPostData(slug: string) {
+  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+  // 1. 解析元数据
+  const matterResult = matter(fileContents);
+
+  // 2. 使用 unified/remark/rehype 管道处理内容
+  const processedContent = await remark()
+    .use(remarkRehype) // Markdown AST -> HTML AST
+    .use(rehypeHighlight) // 代码高亮
+    .use(rehypeSlug) // 给标题添加 id
+    .use(rehypeStringify) // HTML AST -> String
+    .process(matterResult.content);
+
+  const contentHtml = processedContent.toString();
+
+  return {
+    slug,
+    contentHtml,
+    title: matterResult.data.title,
+    date: matterResult.data.date,
+    description: matterResult.data.description,
+    category: matterResult.data.category || '其他',
+  };
+}
 export interface Post {
   slug: string;    // 文件名
   title: string;   // 标题
@@ -60,26 +91,4 @@ export function getPostsByCategory(category: string): Post[] {
   // 假设 Frontmatter 存的是 key (如 ai-engineering) 或者 value (如 AI 工程化)
   // 为了简单，建议 Frontmatter 存 key
   return allPosts.filter(post => post.category === category);
-}
-
-// 根据 slug 获取单篇文章的详细数据
-export async function getPostData(slug: string) {
-  const fullPath = path.join(postsDirectory, `${slug}.md`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const matterResult = matter(fileContents);
-
-  const processedContent = await remark()
-    .use(html)
-    .process(matterResult.content);
-
-  const contentHtml = processedContent.toString();
-
-  return {
-    slug,
-    contentHtml,
-    title: matterResult.data.title,
-    date: matterResult.data.date,
-    description: matterResult.data.description,
-    category: matterResult.data.category || '其他',
-  };
 }

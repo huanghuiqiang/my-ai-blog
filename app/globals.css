@@ -27,3 +27,45 @@ body {
 ::selection {
   @apply bg-blue-500/30 text-blue-900 dark:text-blue-100;
 }
+
+/* === Typography 深度定制 === */
+@layer utilities {
+  .prose {
+    @apply text-slate-700 dark:text-slate-300;
+  }
+  
+  /* 标题样式 */
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply text-slate-900 dark:text-slate-100 font-bold tracking-tight scroll-mt-24;
+  }
+
+  /* 链接样式 */
+  .prose a {
+    @apply text-blue-600 dark:text-blue-400 no-underline border-b border-blue-600/30 dark:border-blue-400/30 hover:border-blue-600 dark:hover:border-blue-400 transition-colors;
+  }
+
+  /* 代码块容器 */
+  .prose pre {
+    @apply bg-slate-900 border border-slate-800 rounded-xl shadow-lg overflow-x-auto p-4 my-6;
+  }
+
+  /* 内联代码 */
+  .prose :not(pre) > code {
+    @apply bg-slate-100 dark:bg-slate-800 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-medium font-mono;
+    &::before, &::after {
+      content: none !important;
+    }
+  }
+}
+
+/* === Syntax Highlighting (One Dark 风格) === */
+.hljs-comment, .hljs-quote { @apply text-slate-500 italic; }
+.hljs-doctag, .hljs-keyword, .hljs-formula { @apply text-purple-400; }
+.hljs-section, .hljs-name, .hljs-selector-tag, .hljs-deletion, .hljs-subst { @apply text-red-400; }
+.hljs-literal { @apply text-blue-400; }
+.hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute, .hljs-meta .hljs-string { @apply text-green-400; }
+.hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number { @apply text-orange-400; }
+.hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title { @apply text-blue-400; }
+.hljs-built_in, .hljs-title.class_, .hljs-class .hljs-title { @apply text-yellow-400; }
+.hljs-emphasis { @apply italic; }
+.hljs-strong { @apply font-bold; }
