@@ -1,8 +1,29 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* 
-  核心定义：
-  告诉 Tailwind，当 HTML 标签上有 .dark 类名时，激活 dark: 开头的样式。
-*/
 @variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: var(--font-inter);
+  
+  /* 自定义动画 */
+  --animate-pulse-slow: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 全局基础样式 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 
+  背景已经在 layout.tsx 中通过 div 层处理了，
+  这里只需要保留最基础的重置即可。
+*/
+body {
+  @apply antialiased;
+}
+
+/* 选中文本的颜色：AI 风格的紫色/蓝色 */
+::selection {
+  @apply bg-blue-500/30 text-blue-900 dark:text-blue-100;
+}

@@ -3,17 +3,19 @@ import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   return (
-    <header className="flex justify-between items-center mb-10">
-      <Link href="/" className="group">
-        <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-          我的 AI 学习博客
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400">
-          记录架构、代码与思考
-        </p>
-      </Link>
-      {/* 放置开关 */}
-      <ThemeToggle />
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md mb-10">
+      <div className="max-w-2xl mx-auto px-6 h-16 flex justify-between items-center">
+        <Link href="/" className="group flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">
+            AI
+          </div>
+          <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            我的 AI 学习博客
+          </span>
+        </Link>
+        {/* 放置开关 */}
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

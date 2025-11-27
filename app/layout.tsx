@@ -16,15 +16,23 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      {/* 
-        IT 知识点: suppressHydrationWarning 
-        我们需要在 html 标签上加这个属性。
-        因为 next-themes 会在网页加载时修改 html 的 class 属性，
-        这会导致 React 报错说“服务器返回的 HTML 和浏览器实际渲染的不一样”，
-        加这个属性就是告诉 React：“我知道这里会变，别报错”。
-      */}
-      <body className={`${inter.className} bg-background text-foreground`}>
-        {/* 2. 用 Provider 包裹整个应用 */}
+      <body className={`${inter.className} bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 antialiased relative min-h-screen selection:bg-blue-500/30 selection:text-blue-900 dark:selection:text-blue-100`}>
+        {/* === 背景装饰层 Start === */}
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          {/* 1. 顶部左侧的蓝色光晕 */}
+          <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-400/20 dark:bg-blue-600/10 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse-slow" />
+          
+          {/* 2. 顶部右侧的紫色光晕 */}
+          <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-400/20 dark:bg-purple-600/10 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse-slow delay-1000" />
+          
+          {/* 3. 底部中间的粉色光晕 */}
+          <div className="absolute bottom-[-20%] left-[20%] w-[800px] h-[800px] rounded-full bg-pink-400/20 dark:bg-pink-600/10 blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-pulse-slow delay-2000" />
+          
+          {/* 4. 点阵纹理覆盖层 (使用 SVG 背景图) */}
+          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03] dark:opacity-[0.05]" />
+        </div>
+        {/* === 背景装饰层 End === */}
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
