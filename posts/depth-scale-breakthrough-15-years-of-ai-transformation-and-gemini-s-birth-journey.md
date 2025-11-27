@@ -5,8 +5,8 @@ description: "Jeff Dean 深度复盘 Google AI 十五年的演进历程：从 Di
 category: "Artificial Intelligence"
 tags: ["Google DeepMind", "Jeff Dean", "Gemini", "Transformer", "TPU", "Large Language Models"]
 ---
-
-# 深度、规模与突破：AI 十五年巨变与 Gemini 的诞生之路
+> **引用来源**：本文内容整理自 Google DeepMind 首席科学家 Jeff Dean 关于人工智能发展历史与 Gemini 模型技术演进的主题分享。[Stanford AI Club: Jeff Dean 谈重要的人工智能趋势](https://www.youtube.com/watch?v=AnTw_t21ayE)
+---
 
 ## 引言：AI 如何彻底改变我们的预期
 
@@ -77,4 +77,3 @@ AI的进步可能使深层次的专业知识能够被更多人利用。例如，
 
 ---
 
-> **引用来源**：本文内容整理自 Google DeepMind 首席科学家 Jeff Dean 关于人工智能发展历史与 Gemini 模型技术演进的主题分享。[Stanford AI Club: Jeff Dean 谈重要的人工智能趋势](https://www.youtube.com/watch?v=AnTw_t21ayE)
