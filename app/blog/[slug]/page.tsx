@@ -1,7 +1,9 @@
 import { getPostData, getSortedPostsData } from '@/lib/posts';
+import { Header } from '@/components/Header';
+import Link from 'next/link';
+import { Metadata } from 'next';
 
 // 1. 生成静态路径 (Static Params)
-// 告诉 Next.js 在构建时要把哪些文章提前生成好 HTML
 export async function generateStaticParams() {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
@@ -9,35 +11,57 @@ export async function generateStaticParams() {
   }));
 }
 
-// 2. 页面组件
-// 注意：在 Next.js 15 中，params 是一个 Promise，必须 await
+// 2. 动态生成 Metadata (SEO)
+// 这是一个 Next.js 的特殊函数，用于生成 <head> 中的标签
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const postData = await getPostData(slug);
+
+  return {
+    title: `${postData.title} | 我的 AI 博客`,
+    description: postData.description || '关于 AI 的深度思考',
+    openGraph: {
+      title: postData.title,
+      description: postData.description,
+      type: 'article',
+      publishedTime: postData.date,
+    },
+  };
+}
+
+// 3. 页面组件
 export default async function Post({ params }: { params: Promise<{ slug: string }> }) {
-  // 等待参数解析
   const { slug } = await params; 
-  
-  // 获取文章数据
   const postData = await getPostData(slug);
 
   return (
-    <article className="max-w-2xl mx-auto py-10 px-6">
-      <header className="mb-10 text-center">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">
-          {postData.title}
-        </h1>
-        <div className="text-slate-500">
-          {postData.date}
-        </div>
-      </header>
+    <div className="max-w-2xl mx-auto py-10 px-6">
+      {/* 复用 Header，保持一致体验 */}
+      <Header />
 
-      {/* 
-        危险动作警告：dangerouslySetInnerHTML 
-        React 默认不渲染 HTML 字符串以防 XSS 攻击。
-        但因为内容是我们自己写的 Markdown，所以这里我们告诉 React "我相信这个内容是安全的"。
-      */}
-    <div 
-      className="prose prose-slate dark:prose-invert lg:prose-xl mx-auto"
-      dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
-    />
-    </article>
+      <main>
+        <article>
+          <header className="mb-10 text-center">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+              {postData.title}
+            </h1>
+            <div className="text-slate-500 dark:text-slate-400">
+              {postData.date}
+            </div>
+          </header>
+
+          <div 
+            className="prose prose-slate dark:prose-invert lg:prose-xl mx-auto"
+            dangerouslySetInnerHTML={{ __html: postData.contentHtml }} 
+          />
+        </article>
+
+        <div className="mt-10 pt-10 border-t border-slate-200 dark:border-slate-700">
+          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+            ← 返回首页
+          </Link>
+        </div>
+      </main>
+    </div>
   );
 }

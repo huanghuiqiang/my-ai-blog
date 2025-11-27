@@ -64,7 +64,7 @@ export async function getPostData(slug: string) {
   const processedContent = await remark()
     .use(html)
     .process(matterResult.content);
-    
+
   const contentHtml = processedContent.toString();
 
   // 3. 返回组合数据
@@ -73,5 +73,6 @@ export async function getPostData(slug: string) {
     contentHtml,
     title: matterResult.data.title,
     date: matterResult.data.date,
+    description: matterResult.data.description, // 添加 description
   };
 }
