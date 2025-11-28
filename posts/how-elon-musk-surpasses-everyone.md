@@ -2,7 +2,7 @@
 title: "埃隆·马斯克如何超越所有人：个人愿景、集体力量与天才的量级评估"
 date: "2025-11-28"
 description: "不仅是个人能力，更是一种前所未有的“集体力量”与对天才等级的精准校准。"
-category: "leadership-and-strategy"
+category: "video-summary"
 tags: ["Elon Musk", "Leadership", "Tech Strategy", "Talent", "非线性增长"]
 ---
 
