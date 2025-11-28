@@ -8,6 +8,9 @@ tags: ["Elon Musk", "Leadership", "Tech Strategy", "Talent", "非线性增长"]
 
 # 埃隆·马斯克如何超越所有人：个人愿景、集体力量与天才的量级评估
 
+> **引用来源**：本文内容整理自[Why Elon Outcompetes Everyone | Shaun Maguire, Sequoia](https://www.youtube.com/watch?v=62X1vm3QBuE)
+---
+
 ## 引言
 
 风险投资家们不断追问：埃隆·马斯克（Elon Musk）是如何同时管理多家颠覆性公司的？红杉资本合伙人肖恩·马奎尔（Shaun Maguire）分享了他近距离观察马斯克及其生态系统后的洞察：这不仅关乎马斯克个人的天赋与勤奋，也关乎他建立的“集体力量”以及他对顶尖人才的独特评估方式。
