@@ -138,7 +138,7 @@ async function startPathfinding() {
     start.g = 0;
     start.f = heuristic(start, end);
     
-    ながら循环:
+    // 主循环
     while(openSet.length > 0) {
         // 找到 f 值最小的节点
         let winner = 0;
