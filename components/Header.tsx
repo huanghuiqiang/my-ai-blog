@@ -26,6 +26,14 @@ export function Header() {
               {name}
             </Link>
           ))}
+          
+          {/* 代码学习入口 - 特殊样式 */}
+          <Link 
+            href="/playground"
+            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 text-white font-semibold hover:shadow-lg hover:shadow-sky-500/30 transition-all hover:scale-105"
+          >
+            💻 代码学习
+          </Link>
         </nav>
 
         {/* 放置开关 */}

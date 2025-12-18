@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS 并发限制队列可视化演示</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Promise Concurrency Control</h1>
+            <p class="description">演示：如何使用限制并发的队列来处理大量异步任务</p>
+        </header>
+
+        <section class="controls">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label>并发数 (Limit):</label>
+                <input type="number" id="limitInput" value="3" min="1" max="10" 
+                       style="width: 50px; background: rgba(0,0,0,0.2); color: white; border: 1px solid #444; padding: 5px; border-radius: 4px;">
+            </div>
+            <button id="startBtn">开始执行 20 个任务</button>
+            <button id="clearBtn" style="background: rgba(255,255,255,0.1); color: #ccc;">清空画布</button>
+        </section>
+
+        <section class="status-bar">
+            <div class="stat-item">
+                <span class="stat-value" id="activeCount">0</span>
+                <span class="stat-label">正在运行</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="waitingCount">0</span>
+                <span class="stat-label">队列等待</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="completedCount">0</span>
+                <span class="stat-label">已完成</span>
+            </div>
+        </section>
+
+        <div class="task-grid" id="taskGrid">
+            <!-- 任务卡片会动态插入这里 -->
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><span class="dot" style="background: rgba(255,255,255,0.2)"></span> 待处理</div>
+            <div class="legend-item"><span class="dot" style="background: var(--primary)"></span> 执行中</div>
+            <div class="legend-item"><span class="dot" style="background: var(--success)"></span> 已完成</div>
+        </div>
+    </div>
+
+    <script>
+        // --- 核心 PromiseQueue 类 (和你提供的一致) ---
+        class PromiseQueue {
+            constructor(limit) {
+                this.limit = limit;
+                this.queue = [];
+                this.count = 0;
+                
+                // 增加一些回调用于更新 UI
+                this.onUpdate = () => {};
+            }
+
+            add(task) {
+                return new Promise((resolve, reject) => {
+                    this.queue.push({ task, resolve, reject });
+                    this.onUpdate();
+                    this.run();
+                });
+            }
+
+            run() {
+                while (this.count < this.limit && this.queue.length > 0) {
+                    const { task, resolve, reject } = this.queue.shift();
+                    this.count++;
+                    this.onUpdate();
+
+                    task()
+                        .then(resolve)
+                        .catch(reject)
+                        .finally(() => {
+                            this.count--;
+                            this.onUpdate();
+                            this.run();
+                        });
+                }
+            }
+        }
+
+        // --- UI 控制逻辑 ---
+        const taskGrid = document.getElementById('taskGrid');
+        const activeCountEl = document.getElementById('activeCount');
+        const waitingCountEl = document.getElementById('waitingCount');
+        const completedCountEl = document.getElementById('completedCount');
+        const limitInput = document.getElementById('limitInput');
+        
+        let completedTotal = 0;
+        let pQueue = null;
+
+        function updateUI() {
+            if (!pQueue) return;
+            activeCountEl.textContent = pQueue.count;
+            waitingCountEl.textContent = pQueue.queue.length;
+            completedCountEl.textContent = completedTotal;
+        }
+
+        function createTaskCard(id) {
+            const card = document.createElement('div');
+            card.className = 'task-card pending';
+            card.id = `task-${id}`;
+            card.innerHTML = `
+                <div class="task-id">#${id}</div>
+                <div class="task-status">Waiting</div>
+            `;
+            taskGrid.appendChild(card);
+            return card;
+        }
+
+        async function startDemo() {
+            const limit = parseInt(limitInput.value) || 3;
+            const taskTotal = 20;
+            
+            pQueue = new PromiseQueue(limit);
+            pQueue.onUpdate = updateUI;
+            
+            taskGrid.innerHTML = '';
+            completedTotal = 0;
+            updateUI();
+
+            const tasks = Array.from({ length: taskTotal }, (_, i) => i + 1);
+
+            tasks.forEach(id => {
+                const card = createTaskCard(id);
+                
+                // 具体的异步任务：模拟网络请求
+                const task = () => new Promise(resolve => {
+                    // UI 反馈：设为运行中
+                    card.className = 'task-card running';
+                    card.querySelector('.task-status').textContent = 'Running...';
+                    
+                    // 随机模拟 1-3 秒的耗时
+                    const duration = 1000 + Math.random() * 2000;
+                    setTimeout(() => {
+                        resolve(id);
+                    }, duration);
+                });
+
+                // 将任务加入队列
+                pQueue.add(task).then(() => {
+                    // UI 反馈：设为已完成
+                    card.className = 'task-card completed';
+                    card.querySelector('.task-status').textContent = 'Done';
+                    completedTotal++;
+                    updateUI();
+                });
+            });
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startDemo);
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            taskGrid.innerHTML = '';
+            completedTotal = 0;
+            if (pQueue) {
+                pQueue.queue = [];
+                pQueue.count = 0;
+            }
+            updateUI();
+        });
+    </script>
+</body>
+</html>
