@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Debounce vs Throttle Visualizer</title>
+    <style>
+        :root {
+            --bg: #111827;
+            --card: #1f2937;
+            --text: #f3f4f6;
+            --accent: #8b5cf6;
+            --raw: #ef4444;
+            --debounce: #3b82f6;
+            --throttle: #10b981;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        h1 { margin-bottom: 2rem; }
+        .track-area {
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            background: var(--card);
+            border: 2px dashed #374151;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            cursor: crosshair;
+            position: relative;
+            overflow: hidden;
+        }
+        .mouse-dot {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: absolute;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: all 0.05s ease;
+        }
+        
+        .viz-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .panel {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .indicator {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 1rem auto;
+            background: #374151;
+            transition: background 0.1s, transform 0.1s;
+        }
+        
+        .indicator.active { transform: scale(1.2); }
+        .raw .indicator.active { background: var(--raw); box-shadow: 0 0 20px var(--raw); }
+        .debounce .indicator.active { background: var(--debounce); box-shadow: 0 0 20px var(--debounce); }
+        .throttle .indicator.active { background: var(--throttle); box-shadow: 0 0 20px var(--throttle); }
+        
+        .count { font-size: 2rem; font-weight: bold; font-family: monospace; }
+        
+        h3 { color: #9ca3af; margin: 0; }
+        
+        canvas {
+            margin-top: 2rem;
+            background: #000;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 900px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>移动鼠标体验差异</h1>
+    
+    <div class="track-area" id="trackArea">
+        <span style="pointer-events: none; opacity: 0.5;">在此区域移动鼠标</span>
+        <div class="mouse-dot" id="mouseDot"></div>
+    </div>
+
+    <div class="viz-container">
+        <div class="panel raw">
+            <h3>Raw (原生)</h3>
+            <div class="indicator" id="indRaw"></div>
+            <div class="count" id="countRaw">0</div>
+        </div>
+        <div class="panel debounce">
+            <h3>Debounce (防抖 500ms)</h3>
+            <div class="indicator" id="indDebounce"></div>
+            <div class="count" id="countDebounce">0</div>
+        </div>
+        <div class="panel throttle">
+            <h3>Throttle (节流 500ms)</h3>
+            <div class="indicator" id="indThrottle"></div>
+            <div class="count" id="countThrottle">0</div>
+        </div>
+    </div>
+    
+    <canvas id="timeline" width="900" height="150"></canvas>
+
+    <script>
+        // Utils
+        const $ = id => document.getElementById(id);
+        
+        // State
+        const state = {
+            raw: 0,
+            debounce: 0,
+            throttle: 0
+        };
+        
+        // Implementation
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function throttle(func, limit) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+        
+        // Handlers
+        const trigger = (type) => {
+            state[type]++;
+            $(`count${type.charAt(0).toUpperCase() + type.slice(1)}`).innerText = state[type];
+            
+            const el = $(`ind${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            el.classList.remove('active');
+            void el.offsetWidth; // trigger reflow
+            el.classList.add('active');
+            
+            // Record event for timeline
+            events.push({ type, time: Date.now() });
+        };
+        
+        const handleRaw = () => trigger('raw');
+        const handleDebounce = debounce(() => trigger('debounce'), 500);
+        const handleThrottle = throttle(() => trigger('throttle'), 500);
+
+        // Events
+        const area = $('trackArea');
+        const dot = $('mouseDot');
+        
+        area.addEventListener('mousemove', (e) => {
+            const rect = area.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            dot.style.left = x + 'px';
+            dot.style.top = y + 'px';
+            
+            handleRaw();
+            handleDebounce();
+            handleThrottle();
+        });
+
+        // Canvas Rendering
+        const canvas = $('timeline');
+        const ctx = canvas.getContext('2d');
+        let events = [];
+        const colors = { raw: '#ef4444', debounce: '#3b82f6', throttle: '#10b981' };
+        
+        function draw() {
+            const now = Date.now();
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // clear with transparency
+            
+            // Draw baseline
+            ctx.strokeStyle = '#374151';
+            ctx.beginPath();
+            ctx.moveTo(0, 50); ctx.lineTo(900, 50);
+            ctx.moveTo(0, 100); ctx.lineTo(900, 100);
+            ctx.moveTo(0, 150); ctx.lineTo(900, 150);
+            ctx.stroke();
+            
+            // Filter old events (keep last 5 seconds)
+            events = events.filter(e => now - e.time < 5000);
+            
+            events.forEach(e => {
+                const x = 900 - (now - e.time) / 5000 * 900;
+                let y = 0;
+                if(e.type === 'raw') y = 40;
+                if(e.type === 'debounce') y = 90;
+                if(e.type === 'throttle') y = 140;
+                
+                ctx.fillStyle = colors[e.type];
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI*2);
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>

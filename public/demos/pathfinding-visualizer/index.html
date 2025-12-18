@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>A* Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>A* 寻路算法可视化</h1>
+            <div class="controls">
+                <button id="startBtn" class="primary">开始寻路</button>
+                <button id="resetBtn" class="secondary">重置网格</button>
+                <button id="clearOpsBtn" class="secondary">清除路径</button>
+            </div>
+            <div class="legend">
+                <div class="item"><span class="node start"></span>起点</div>
+                <div class="item"><span class="node end"></span>终点</div>
+                <div class="item"><span class="node wall"></span>墙壁 (点击生成)</div>
+                <div class="item"><span class="node visited"></span>搜索区</div>
+                <div class="item"><span class="node path"></span>最短路径</div>
+            </div>
+        </header>
+        
+        <div id="grid" class="grid-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

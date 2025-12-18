@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Particle Gravity Physics</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; }
+        canvas { display: block; }
+        .hint {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.5);
+            font-family: sans-serif;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="hint">Click to Repel | Move to Attract</div>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // Configuration
+        const PARTICLE_COUNT = 800;
+        const MOUSE_Radius = 150;
+        const GRAVITY = 0.05;
+        const FRICTION = 0.99;
+        
+        const mouse = { x: undefined, y: undefined, active: false };
+        
+        class Particle {
+            constructor() {
+                this.init();
+            }
+            
+            init() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = Math.random() * 2 + 1;
+                this.color = `hsl(${Math.random() * 60 + 200}, 100%, 70%)`; // Blue-ish
+            }
+            
+            update() {
+                // Physics
+                this.vy += GRAVITY;
+                this.vx *= FRICTION;
+                this.vy *= FRICTION;
+                
+                // Mouse Interaction
+                if (mouse.x) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < MOUSE_Radius) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (MOUSE_Radius - distance) / MOUSE_Radius;
+                        
+                        // Push or Pull
+                        const direction = mouse.clicking ? -1 : 1;
+                        const strength = 1.5 * direction;
+                        
+                        this.vx += forceDirectionX * force * strength;
+                        this.vy += forceDirectionY * force * strength;
+                    }
+                }
+                
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Floor Collision
+                if (this.y + this.radius > height) {
+                    this.y = height - this.radius;
+                    this.vy = -this.vy * 0.7; // Bounce with energy loss
+                }
+                
+                // Wall Collision
+                if (this.x + this.radius > width || this.x - this.radius < 0) {
+                    this.vx = -this.vx * 0.8;
+                    if(this.x + this.radius > width) this.x = width - this.radius;
+                    if(this.x - this.radius < 0) this.x = this.radius;
+                }
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+        
+        function init() {
+            resize();
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Trails effect
+            ctx.fillRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+        }
+        
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        window.addEventListener('mousedown', () => mouse.clicking = true);
+        window.addEventListener('mouseup', () => mouse.clicking = false);
+        window.addEventListener('mouseleave', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+        
+        init();
+        animate();
+    </script>
+</body>
+</html>

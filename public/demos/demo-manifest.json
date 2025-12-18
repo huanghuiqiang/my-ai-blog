@@ -12,5 +12,47 @@
     "createdAt": "2025-12-18",
     "thumbnail": "/demos/promise-queue/thumbnail.png",
     "path": "/demos/promise-queue/index.html"
+  },
+  {
+    "id": "pathfinding-visualizer",
+    "title": "A* 寻路算法可视化",
+    "description": "交互式演示经典的 A* 寻路算法，点击绘制墙壁，观察算法如何找到最短路径",
+    "tags": [
+      "算法",
+      "图论",
+      "可视化"
+    ],
+    "difficulty": "中级",
+    "createdAt": "2025-12-18",
+    "thumbnail": "/demos/pathfinding-visualizer/thumbnail.svg",
+    "path": "/demos/pathfinding-visualizer/index.html"
+  },
+  {
+    "id": "debounce-throttle",
+    "title": "Debounce vs Throttle 可视化",
+    "description": "直观对比防抖和节流两种性能优化技术，实时显示事件触发频率的差异",
+    "tags": [
+      "JavaScript",
+      "性能优化",
+      "事件处理"
+    ],
+    "difficulty": "初级",
+    "createdAt": "2025-12-18",
+    "thumbnail": "/demos/debounce-throttle/thumbnail.svg",
+    "path": "/demos/debounce-throttle/index.html"
+  },
+  {
+    "id": "particle-physics",
+    "title": "粒子重力物理引擎",
+    "description": "基于 Canvas 的粒子系统，模拟重力、碰撞和鼠标交互，探索 Web 动画的极限",
+    "tags": [
+      "Canvas",
+      "物理引擎",
+      "动画"
+    ],
+    "difficulty": "高级",
+    "createdAt": "2025-12-18",
+    "thumbnail": "/demos/particle-physics/thumbnail.svg",
+    "path": "/demos/particle-physics/index.html"
   }
 ]
