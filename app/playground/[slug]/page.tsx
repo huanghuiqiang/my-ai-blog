@@ -69,12 +69,12 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
       </header>
 
       {/* Demo Container */}
-      <main className="flex-1 p-6">
-        <div className="max-w-7xl mx-auto h-full">
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden h-full min-h-[calc(100vh-200px)]">
+      <main className="flex-1 p-6 flex flex-col">
+        <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
+          <div className="bg-slate-900/50 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col">
             <iframe
               src={demo.path}
-              className="w-full h-full border-0"
+              className="w-full flex-1 border-0"
               title={demo.title}
               sandbox="allow-scripts allow-same-origin"
             />
