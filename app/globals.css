@@ -4,61 +4,86 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: var(--font-inter);
-  
-  /* 自定义动画 */
   --animate-pulse-slow: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* 全局基础样式 */
+:root {
+  --surface: #f8fafb;
+  --text-primary: #0f172a;
+  --text-muted: #475569;
+  --brand: #0ea5e9;
+  --brand-2: #0f766e;
+  --line: #d8e2ec;
+}
+
+.dark {
+  --surface: #060d16;
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --brand: #38bdf8;
+  --brand-2: #34d399;
+  --line: #1f2a37;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-/* 
-  背景已经在 layout.tsx 中通过 div 层处理了，
-  这里只需要保留最基础的重置即可。
-*/
 body {
-  @apply antialiased;
+  font-family: var(--font-sans), sans-serif;
+  background: var(--surface);
+  color: var(--text-primary);
 }
 
-/* 选中文本的颜色：AI 风格的紫色/蓝色 */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif), serif;
+}
+
 ::selection {
-  @apply bg-blue-500/30 text-blue-900 dark:text-blue-100;
+  background: color-mix(in oklab, var(--brand) 35%, transparent);
 }
 
-/* === Typography 深度定制 === */
 @layer utilities {
   .prose {
-    @apply text-slate-700 dark:text-slate-300;
+    color: var(--text-muted);
   }
-  
-  /* 标题样式 */
+
   .prose h1, .prose h2, .prose h3, .prose h4 {
-    @apply text-slate-900 dark:text-slate-100 font-bold tracking-tight scroll-mt-24;
+    color: var(--text-primary);
+    scroll-margin-top: 6rem;
   }
 
-  /* 链接样式 */
   .prose a {
-    @apply text-blue-600 dark:text-blue-400 no-underline border-b border-blue-600/30 dark:border-blue-400/30 hover:border-blue-600 dark:hover:border-blue-400 transition-colors;
+    color: var(--brand);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in oklab, var(--brand) 40%, transparent);
+    transition: border-color 180ms ease, color 180ms ease;
   }
 
-  /* 代码块容器 */
+  .prose a:hover {
+    border-color: color-mix(in oklab, var(--brand) 80%, transparent);
+  }
+
   .prose pre {
-    @apply bg-slate-900 border border-slate-800 rounded-xl shadow-lg overflow-x-auto p-4 my-6;
+    @apply rounded-xl shadow-lg overflow-x-auto p-4 my-6;
+    border: 1px solid color-mix(in oklab, var(--line) 90%, transparent);
+    background: #09111b;
   }
 
-  /* 内联代码 */
   .prose :not(pre) > code {
-    @apply bg-slate-100 dark:bg-slate-800 text-pink-600 dark:text-pink-400 px-1.5 py-0.5 rounded text-sm font-medium font-mono;
+    @apply px-1.5 py-0.5 rounded text-sm font-medium font-mono;
+    background: color-mix(in oklab, var(--brand) 12%, var(--surface));
+    color: var(--brand-2);
+
     &::before, &::after {
       content: none !important;
     }
   }
 }
 
-/* === Syntax Highlighting (One Dark 风格) === */
 .hljs-comment, .hljs-quote { @apply text-slate-500 italic; }
 .hljs-doctag, .hljs-keyword, .hljs-formula { @apply text-purple-400; }
 .hljs-section, .hljs-name, .hljs-selector-tag, .hljs-deletion, .hljs-subst { @apply text-red-400; }
